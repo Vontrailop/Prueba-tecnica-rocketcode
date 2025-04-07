@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocketdev.mapper.BookCatalogMapper">
+    <resultMap id="BookCatalogResultMap" type="com.rocketdev.model.BookCatalog">
+        <id column="id" property="id" />
+        <result column="genre_name" property="genreName" />
+        <result column="description" property="description" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="status" property="status" />
+    </resultMap>
+
+    <select id="getAllGenres" resultMap="BookCatalogResultMap">
+        SELECT * FROM book_catalogs WHERE status = 'ACTIVE'
+    </select>
+
+    <select id="getGenreById" resultMap="BookCatalogResultMap" parameterType="long">
+        SELECT * FROM book_catalogs WHERE id = #{id}
+    </select>
+
+    <select id="searchGenres" resultMap="BookCatalogResultMap">
+        SELECT * FROM book_catalogs
+        WHERE (genre_name LIKE #{searchTerm} OR description LIKE #{searchTerm})
+        AND status = 'ACTIVE'
+    </select>
+
+    <insert id="insertGenre" parameterType="com.rocketdev.model.BookCatalog" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO book_catalogs (genre_name, description, created_at, updated_at, status)
+        VALUES (#{genreName}, #{description}, NOW(), NOW(), 'ACTIVE')
+    </insert>
+
+    <update id="updateGenre" parameterType="com.rocketdev.model.BookCatalog">
+        UPDATE book_catalogs
+        SET genre_name = #{genreName},
+            description = #{description},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateGenreStatus">
+        UPDATE book_catalogs
+        SET status = #{status},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteGenre" parameterType="long">
+        UPDATE book_catalogs
+        SET status = 'INACTIVE',
+            updated_at = NOW()
+        WHERE id = #{id}
+    </delete>
+</mapper>

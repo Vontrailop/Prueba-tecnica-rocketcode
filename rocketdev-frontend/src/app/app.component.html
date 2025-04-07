@@ -1,0 +1,51 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" routerLink="/">
+      <i class="bi bi-book me-2"></i>
+      Sistema de Gestión de Biblioteca
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <i class="bi bi-house-door me-1"></i>Inicio
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="booksDropdown" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-book me-1"></i>Libros
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="booksDropdown">
+            <li><a class="dropdown-item" routerLink="/books/create">Agregar Libro</a></li>
+            <li><a class="dropdown-item" routerLink="/categories">Categorías</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="studentsDropdown" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-people me-1"></i>Estudiantes
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="studentsDropdown">
+            <li><a class="dropdown-item" routerLink="/students">Listar Estudiantes</a></li>
+            <li><a class="dropdown-item" routerLink="/students/create">Registrar Estudiante</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="loansDropdown" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-journal-arrow-up me-1"></i>Préstamos
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="loansDropdown">
+            <li><a class="dropdown-item" routerLink="/loans">Listar Préstamos</a></li>
+            <li><a class="dropdown-item" routerLink="/loans/create">Nuevo Préstamo</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="container py-4">
+  <router-outlet></router-outlet>
+</main>

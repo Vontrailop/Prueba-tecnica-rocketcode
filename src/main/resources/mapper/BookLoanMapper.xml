@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocketdev.mapper.BookLoanMapper">
+    <resultMap id="BookLoanResultMap" type="com.rocketdev.model.BookLoan">
+        <id column="id" property="id" />
+        <result column="book_id" property="bookId" />
+        <result column="student_id" property="studentId" />
+        <result column="loan_date" property="loanDate" />
+        <result column="due_date" property="dueDate" />
+        <result column="return_date" property="returnDate" />
+        <result column="status" property="status" />
+        <result column="notes" property="notes" />
+        <association property="book" javaType="com.rocketdev.model.Book">
+            <id column="b_id" property="id" />
+            <result column="b_title" property="title" />
+            <result column="b_author" property="author" />
+            <result column="b_isbn" property="isbn" />
+        </association>
+        <association property="student" javaType="com.rocketdev.model.Student">
+            <id column="s_id" property="id" />
+            <result column="s_first_name" property="firstName" />
+            <result column="s_last_name" property="lastName" />
+            <result column="s_email" property="email" />
+        </association>
+    </resultMap>
+
+    <select id="getAllLoans" resultMap="BookLoanResultMap">
+        SELECT l.*, 
+               b.id as b_id, b.title as b_title, b.author as b_author, b.isbn as b_isbn,
+               s.id as s_id, s.first_name as s_first_name, s.last_name as s_last_name, s.email as s_email
+        FROM book_loans l
+        LEFT JOIN books b ON l.book_id = b.id
+        LEFT JOIN students s ON l.student_id = s.id
+    </select>
+
+    <select id="getLoanById" resultMap="BookLoanResultMap" parameterType="long">
+        SELECT l.*, 
+               b.id as b_id, b.title as b_title, b.author as b_author, b.isbn as b_isbn,
+               s.id as s_id, s.first_name as s_first_name, s.last_name as s_last_name, s.email as s_email
+        FROM book_loans l
+        LEFT JOIN books b ON l.book_id = b.id
+        LEFT JOIN students s ON l.student_id = s.id
+        WHERE l.id = #{id}
+    </select>
+
+    <select id="getLoansByStudentId" resultMap="BookLoanResultMap" parameterType="long">
+        SELECT l.*, 
+               b.id as b_id, b.title as b_title, b.author as b_author, b.isbn as b_isbn,
+               s.id as s_id, s.first_name as s_first_name, s.last_name as s_last_name, s.email as s_email
+        FROM book_loans l
+        LEFT JOIN books b ON l.book_id = b.id
+        LEFT JOIN students s ON l.student_id = s.id
+        WHERE l.student_id = #{studentId}
+    </select>
+
+    <select id="getLoansByBookId" resultMap="BookLoanResultMap" parameterType="long">
+        SELECT l.*, 
+               b.id as b_id, b.title as b_title, b.author as b_author, b.isbn as b_isbn,
+               s.id as s_id, s.first_name as s_first_name, s.last_name as s_last_name, s.email as s_email
+        FROM book_loans l
+        LEFT JOIN books b ON l.book_id = b.id
+        LEFT JOIN students s ON l.student_id = s.id
+        WHERE l.book_id = #{bookId}
+    </select>
+
+    <select id="getOverdueLoans" resultMap="BookLoanResultMap">
+        SELECT l.*, 
+               b.id as b_id, b.title as b_title, b.author as b_author, b.isbn as b_isbn,
+               s.id as s_id, s.first_name as s_first_name, s.last_name as s_last_name, s.email as s_email
+        FROM book_loans l
+        LEFT JOIN books b ON l.book_id = b.id
+        LEFT JOIN students s ON l.student_id = s.id
+        WHERE l.due_date &lt; CURRENT_DATE
+        AND l.return_date IS NULL
+        AND l.status = 'ACTIVE'
+    </select>
+
+    <insert id="createLoan" parameterType="com.rocketdev.model.BookLoan">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+            SELECT book_loan_seq.NEXTVAL FROM dual
+        </selectKey>
+        INSERT INTO book_loans (id, book_id, student_id, loan_date, due_date, status, notes)
+        VALUES (#{id}, #{bookId}, #{studentId}, #{loanDate}, #{dueDate}, #{status}, #{notes})
+    </insert>
+
+    <update id="updateLoan" parameterType="com.rocketdev.model.BookLoan">
+        UPDATE book_loans
+        SET book_id = #{bookId},
+            student_id = #{studentId},
+            loan_date = #{loanDate},
+            due_date = #{dueDate},
+            return_date = #{returnDate},
+            status = #{status},
+            notes = #{notes}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateLoanStatus">
+        UPDATE book_loans
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateReturnDate">
+        UPDATE book_loans
+        SET return_date = #{returnDate},
+            status = 'RETURNED'
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteLoan" parameterType="long">
+        DELETE FROM book_loans WHERE id = #{id}
+    </delete>
+
+</mapper>

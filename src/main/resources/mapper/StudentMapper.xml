@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocketdev.mapper.StudentMapper">
+    <resultMap id="StudentResultMap" type="com.rocketdev.model.Student">
+        <id property="id" column="id"/>
+        <result property="studentNumber" column="student_number"/>
+        <result property="firstName" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="department" column="department"/>
+    </resultMap>
+
+    <select id="getAllStudents" resultMap="StudentResultMap">
+        SELECT * FROM students
+    </select>
+
+    <select id="getStudentById" parameterType="long" resultMap="StudentResultMap">
+        SELECT * FROM students WHERE id = #{id}
+    </select>
+    
+    <select id="getStudentByStudentNumber" parameterType="string" resultMap="StudentResultMap">
+        SELECT * FROM students WHERE student_number = #{studentNumber}
+    </select>
+
+    <select id="searchStudents" parameterType="string" resultMap="StudentResultMap">
+        SELECT * FROM students
+        WHERE LOWER(student_number) LIKE LOWER(#{searchTerm})
+        OR LOWER(first_name) LIKE LOWER(#{searchTerm})
+        OR LOWER(last_name) LIKE LOWER(#{searchTerm})
+        OR LOWER(email) LIKE LOWER(#{searchTerm})
+        OR LOWER(department) LIKE LOWER(#{searchTerm})
+    </select>
+
+    <insert id="insertStudent" parameterType="com.rocketdev.model.Student" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO students (student_number, first_name, last_name, email, phone, department)
+        VALUES (#{studentNumber}, #{firstName}, #{lastName}, #{email}, #{phone}, #{department})
+    </insert>
+
+    <update id="updateStudent" parameterType="com.rocketdev.model.Student">
+        UPDATE students
+        SET student_number = #{studentNumber},
+            first_name = #{firstName},
+            last_name = #{lastName},
+            email = #{email},
+            phone = #{phone},
+            department = #{department}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteStudent" parameterType="long">
+        DELETE FROM students WHERE id = #{id}
+    </delete>
+</mapper>

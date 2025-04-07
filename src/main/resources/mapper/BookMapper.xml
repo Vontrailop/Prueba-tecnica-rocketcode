@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocketdev.mapper.BookMapper">
+    <resultMap id="BookResultMap" type="com.rocketdev.model.Book">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="author" column="author"/>
+        <result property="isbn" column="isbn"/>
+        <result property="category" column="category"/>
+        <result property="price" column="price"/>
+        <result property="quantity" column="quantity"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="getAllBooks" resultMap="BookResultMap">
+        SELECT * FROM books
+    </select>
+
+    <select id="getBookById" parameterType="long" resultMap="BookResultMap">
+        SELECT * FROM books WHERE id = #{id}
+    </select>
+
+    <select id="searchBooks" parameterType="string" resultMap="BookResultMap">
+        SELECT * FROM books
+        WHERE LOWER(title) LIKE LOWER(#{searchTerm})
+        OR LOWER(author) LIKE LOWER(#{searchTerm})
+        OR LOWER(isbn) LIKE LOWER(#{searchTerm})
+    </select>
+
+    <insert id="insertBook" parameterType="com.rocketdev.model.Book" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO books (title, author, isbn, category, price, quantity, status)
+        VALUES (#{title}, #{author}, #{isbn}, #{category}, #{price}, #{quantity}, #{status})
+    </insert>
+
+    <update id="updateBook" parameterType="com.rocketdev.model.Book">
+        UPDATE books
+        SET title = #{title},
+            author = #{author},
+            isbn = #{isbn},
+            category = #{category},
+            price = #{price},
+            quantity = #{quantity},
+            status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateBookQuantity">
+        UPDATE books
+        SET quantity = #{quantity}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateBookStatus">
+        UPDATE books
+        SET status = CASE
+            WHEN #{status} = 'LOANED' THEN 'BORROWED'
+            WHEN #{status} = 'OUT_OF_STOCK' THEN 'MAINTENANCE'
+            WHEN #{status} IN ('AVAILABLE', 'BORROWED', 'MAINTENANCE') THEN #{status}
+            ELSE 'AVAILABLE'
+        END
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteBook" parameterType="long">
+        DELETE FROM books WHERE id = #{id}
+    </delete>
+</mapper>

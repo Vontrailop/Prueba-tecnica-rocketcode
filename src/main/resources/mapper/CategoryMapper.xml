@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocketdev.mapper.CategoryMapper">
+    <resultMap id="CategoryResultMap" type="com.rocketdev.model.Category">
+        <id property="id" column="id"/>
+        <result property="genreName" column="genre_name"/>
+        <result property="description" column="description"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="getAllCategories" resultMap="CategoryResultMap">
+        SELECT * FROM book_catalogs WHERE status = 'ACTIVE'
+    </select>
+
+    <select id="getCategoryById" parameterType="long" resultMap="CategoryResultMap">
+        SELECT * FROM book_catalogs WHERE id = #{id}
+    </select>
+    
+    <select id="getCategoryByName" parameterType="string" resultMap="CategoryResultMap">
+        SELECT * FROM book_catalogs WHERE genre_name = #{genreName}
+    </select>
+
+    <insert id="insertCategory" parameterType="com.rocketdev.model.Category" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO book_catalogs (genre_name, description, status)
+        VALUES (#{genreName}, #{description}, #{status})
+    </insert>
+
+    <update id="updateCategory" parameterType="com.rocketdev.model.Category">
+        UPDATE book_catalogs
+        SET genre_name = #{genreName},
+            description = #{description},
+            status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteCategory" parameterType="long">
+        UPDATE book_catalogs
+        SET status = 'INACTIVE'
+        WHERE id = #{id}
+    </delete>
+</mapper>

@@ -1,0 +1,72 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h2 class="h3 mb-0"><i class="bi bi-book me-2"></i>Crear Nuevo Libro</h2>
+    </div>
+    <div class="col-md-6 text-end">
+      <a routerLink="/" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Volver al Catálogo
+      </a>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form [formGroup]="bookForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="title" class="form-label">Título</label>
+          <input type="text" id="title" formControlName="title" class="form-control">
+          <div *ngIf="bookForm.get('title')?.invalid && (bookForm.get('title')?.dirty || bookForm.get('title')?.touched)">
+            <small class="text-danger">El título es requerido</small>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="author" class="form-label">Autor</label>
+          <input type="text" id="author" formControlName="author" class="form-control">
+          <div *ngIf="bookForm.get('author')?.invalid && (bookForm.get('author')?.dirty || bookForm.get('author')?.touched)">
+            <small class="text-danger">El autor es requerido</small>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="isbn" class="form-label">ISBN</label>
+          <input type="text" id="isbn" formControlName="isbn" class="form-control">
+          <div *ngIf="bookForm.get('isbn')?.invalid && (bookForm.get('isbn')?.dirty || bookForm.get('isbn')?.touched)">
+            <small class="text-danger">El ISBN es requerido</small>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="quantity" class="form-label">Cantidad</label>
+          <input type="number" id="quantity" formControlName="quantity" class="form-control" min="1">
+          <div *ngIf="bookForm.get('quantity')?.invalid && (bookForm.get('quantity')?.dirty || bookForm.get('quantity')?.touched)">
+            <small class="text-danger">La cantidad debe ser al menos 1</small>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="category" class="form-label">Categoría</label>
+          <select id="category" formControlName="category" class="form-control">
+            <option value="">Seleccionar categoría</option>
+            <option *ngFor="let category of categories" [value]="category.genreName">{{category.genreName}}</option>
+          </select>
+          <div *ngIf="bookForm.get('category')?.invalid && (bookForm.get('category')?.dirty || bookForm.get('category')?.touched)">
+            <small class="text-danger">La categoría es requerida</small>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Descripción</label>
+          <textarea id="description" formControlName="description" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button type="submit" class="btn btn-primary" [disabled]="!bookForm.valid">
+            <i class="bi bi-save me-1"></i>Guardar Libro
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
